@@ -7,7 +7,7 @@ import { SiteHeader } from "@/components/site-header";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "CodeForge (Temporary)",
+  title: "Code Hub",
   description: "Online text editor",
 };
 

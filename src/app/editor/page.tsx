@@ -42,25 +42,30 @@ export default function EditorPage() {
   }
 
   return (
-    <div className="flex flex-col flex-grow max-h-screen">
-      <div className="min-h-8 flex items-center px-4 justify-between">
+    <div className="flex flex-col flex-grow bg-primary/5 overflow-y-hidden">
+      <div className="min-h-8 flex items-center px-4 mt-2 space-x-10">
         <div>Options</div>
+        <Button variant="outline" size="sm" onClick={handleRun}>
+          Run
+        </Button>
       </div>
-      <Separator />
       <div className="flex-grow max-h-full">
         <ResizablePanelGroup direction="horizontal">
-          <ResizablePanel defaultSize={60} minSize={5}>
+          <ResizablePanel
+            defaultSize={60}
+            minSize={50}
+            className="m-2 rounded-sm"
+          >
             <Editor
               theme={editorTheme}
               value={code}
               onChange={(code) => setCode(code || "")}
+              className="rounded-xl"
             />
           </ResizablePanel>
-          <ResizableHandle />
+          <ResizableHandle withHandle />
           <ResizablePanel minSize={5} className="flex flex-col">
-            <div className="p-2 max-h-16">
-              <Button onClick={handleRun}>Run</Button>
-            </div>
+            <div className="p-2 max-h-16 font-semibold">Output</div>
             <Separator />
             {/* TODO: Find better approach to solve overflow issue */}
             <div className="flex-grow overflow-y-auto max-h-[calc(100vh-10rem)]"></div>

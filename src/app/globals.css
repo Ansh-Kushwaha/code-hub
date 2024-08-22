@@ -67,3 +67,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+.app-container {
+  padding: 1.25rem;
+}

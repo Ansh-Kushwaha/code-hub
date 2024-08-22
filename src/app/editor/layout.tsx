@@ -1,10 +1,4 @@
-import type { Metadata } from "next";
 import { Separator } from "@/components/ui/separator";
-
-export const metadata: Metadata = {
-  title: "Editor",
-  description: "Code hub editor",
-};
 
 export default function EditorLayout({
   children,
@@ -12,7 +6,7 @@ export default function EditorLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="h-screen flex flex-col max-h-screen">
+    <div className="flex flex-col h-[calc(100vh-3.5rem)]">
       <Separator />
       {children}
     </div>
