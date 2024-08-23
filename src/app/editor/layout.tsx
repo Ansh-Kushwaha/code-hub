@@ -1,4 +1,8 @@
-import { Separator } from "@/components/ui/separator";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import { SiteHeader } from "@/components/site-header";
+import { Inter } from "next/font/google";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export default function EditorLayout({
   children,
@@ -6,9 +10,17 @@ export default function EditorLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex flex-col h-[calc(100vh-3.5rem)]">
-      <Separator />
-      {children}
-    </div>
+    <html lang="en">
+      <body className={inter.className}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
+      </body>
+    </html>
   );
 }
