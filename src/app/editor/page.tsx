@@ -57,13 +57,7 @@ export default function EditorPage() {
           <ResizablePanelGroup direction="horizontal">
             <ResizablePanel defaultSize={60} minSize={50}>
               <div className="p-2 ml-4 flex items-center justify-between">
-                <Select
-                  value="javascript"
-                  onValueChange={(value) => {
-                    setLanguage(value);
-                    console.log(language);
-                  }}
-                >
+                <Select>
                   <SelectTrigger className="h-8 w-[180px] focus:ring-0 focus:ring-transparent focus:ring-offset-0">
                     <SelectValue placeholder="Language" />
                   </SelectTrigger>
@@ -71,7 +65,7 @@ export default function EditorPage() {
                     <SelectItem value="c">C</SelectItem>
                     <SelectItem value="cpp">C++</SelectItem>
                     <SelectItem value="java">Java</SelectItem>
-                    <SelectItem value="javascript">JavaScript</SelectItem>
+                    <SelectItem value="python">Python</SelectItem>
                   </SelectContent>
                 </Select>
                 <Button variant="default" size="thin" onClick={handleRun}>
@@ -83,7 +77,7 @@ export default function EditorPage() {
                 value={code}
                 onChange={(code) => setCode(code || "")}
                 language="javascript"
-                className="mb-9" // fix this
+                className="flex flex-grow m-2 max-h-[calc(100vh-6.5rem)]" // fix this
               />
             </ResizablePanel>
             <ResizableHandle withHandle />
@@ -93,7 +87,7 @@ export default function EditorPage() {
               </div>
               <Separator />
               {/* TODO: Find better approach to solve overflow issue */}
-              <div className="flex-grow overflow-y-auto max-h-[calc(100vh-10rem)]"></div>
+              <div className="flex-grow p-2">Code Hub!</div>
             </ResizablePanel>
           </ResizablePanelGroup>
         </div>
