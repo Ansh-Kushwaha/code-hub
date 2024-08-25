@@ -44,7 +44,7 @@ export default function Home() {
             <CardContent>
               <p>
                 You can start coding right away without registering, but keep in
-                mind that your work won't be saved.
+                mind that your work won&apos;t be saved.
               </p>
             </CardContent>
             <CardContent>
