@@ -13,48 +13,24 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className="flex p-2 bg-primary/5">
-      <div className="app-container flex flex-row">
-        <div className="flex flex-col p-2 min-w-[calc(100vw*0.55)]">
-          <span className="font-bold text-3xl inline-block">
-            Your online platform to write, compile, and save code seamlessly.
-          </span>
+    <main className="flex bg-primary/5">
+      <div className="app-container flex flex-col">
+        <h1 className="inline-block scroll-m-20 py-2 sm:text-4xl text-2xl font-extrabold tracking-tight dark:bg-gradient-to-b dark:from-[#ffffff] dark:to-[#adadad] bg-gradient-to-b from-[#555555] to-[#000000] bg-clip-text text-transparent">
+          Your online platform to write, compile, and save code seamlessly.
+        </h1>
+        <div className="flex flex-col sm:items-baseline p-2">
           <Image
-            src="/editor-light.png"
-            width={500}
-            height={100}
+            src="/editor2.png"
+            width={800}
+            height={200}
             alt="Picture of Editor"
-            className="border dark:border-black rounded-sm mt-10 ml-16 shadow-md z-1"
+            className="border dark:border-black rounded-sm m-4 shadow-md hover:translate-x-2 hover:translate-y-[-4px] transition-all ease-linear z-1"
           />
-          <Link href="/editor" className="flex w-fit text-xl ml-16 mt-4">
-            <span className="font-semibold text-xl">Open Editor</span>
-            <span className="transition ease-linear hover:translate-x-2">
-              <ArrowRightIcon height={32} width={32} className="ml-2" />
+          <Link href="/editor" className="flex w-fit text-xl">
+            <span className="scroll-m-20 pb-2 sm:text-2xl text-xl font-semibold tracking-tight first:mt-0">
+              Open Editor
             </span>
           </Link>
-        </div>
-        <div className="flex flex-col p-2">
-          <Card className="max-w-">
-            <CardHeader>
-              <CardTitle>Register Now!</CardTitle>
-              <CardDescription>
-                Save and open your files anytime with a quick registration.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p>
-                You can start coding right away without registering, but keep in
-                mind that your work won't be saved.
-              </p>
-            </CardContent>
-            <CardContent>
-              Registering allows you to save your progress and access your files
-              later.
-            </CardContent>
-            <CardFooter>
-              <Button variant="default">Register</Button>
-            </CardFooter>
-          </Card>
         </div>
       </div>
     </main>
