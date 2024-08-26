@@ -28,7 +28,7 @@ export default function EditorPage() {
   const [editorTheme, setEditorTheme] = useState(editorThemes[theme!]);
 
   const [code, setCode] = useState<string>("");
-  const [language, setLanguage] = useState<string>("");
+  const [language, setLanguage] = useState<string>("c");
 
   useEffect(() => {
     let themeStr = theme;
@@ -57,7 +57,10 @@ export default function EditorPage() {
           <ResizablePanelGroup direction="horizontal">
             <ResizablePanel defaultSize={60} minSize={50}>
               <div className="p-2 ml-4 flex items-center justify-between">
-                <Select>
+                <Select
+                  value={language}
+                  onValueChange={(value) => setLanguage(value)}
+                >
                   <SelectTrigger className="h-8 w-[180px] focus:ring-0 focus:ring-transparent focus:ring-offset-0">
                     <SelectValue placeholder="Language" />
                   </SelectTrigger>
@@ -76,7 +79,7 @@ export default function EditorPage() {
                 theme={editorTheme}
                 value={code}
                 onChange={(code) => setCode(code || "")}
-                language="javascript"
+                language={language}
                 className="flex flex-grow m-2 max-h-[calc(100vh-6.5rem)]" // fix this
               />
             </ResizablePanel>
