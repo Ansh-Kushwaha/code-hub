@@ -15,7 +15,7 @@ export const UserAvatarWithUsername = async () => {
             <AvatarImage src={session.user.image!} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <span>{session.user.name}</span>
+          <span className="hidden md:inline-block">{session.user.name}</span>
           <LogOutButton />
         </div>
       ) : (

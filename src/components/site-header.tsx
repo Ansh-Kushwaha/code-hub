@@ -7,13 +7,13 @@ import { UserAvatarWithUsername } from "./user-avatar-with-username";
 
 export async function SiteHeader() {
   return (
-    <header className="sticky top-0 z-10 px-[2rem] w-full border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex h-14 max-w-screen items-center">
+    <header className="sticky top-0 z-10 md:px-[2rem] px-[1rem] flex border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="flex h-14 w-screen items-center">
         {/* for desktop site */}
         <Nav />
         {/* for mobile */}
         {/* todo */}
-        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
+        <div className="flex flex-1 items-center space-x-2 justify-end">
           <UserAvatarWithUsername />
           <Link
             href={
