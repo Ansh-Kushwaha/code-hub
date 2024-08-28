@@ -22,12 +22,6 @@ import { save } from "../actions/FileActions";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 
-interface FileProps {
-  name: string;
-  type: string;
-  text: string;
-}
-
 const editorThemes: { [key: string]: string } = {
   light: "light",
   dark: "vs-dark",
@@ -40,7 +34,6 @@ export default function EditorPage() {
   const [code, setCode] = useState<string>("");
   const [language, setLanguage] = useState<string>("c");
   const [fileName, setFileName] = useState<string>("");
-  const [error, setError] = useState<string | null>(null);
 
   const { data } = useSession();
   const { toast } = useToast();
@@ -66,7 +59,6 @@ export default function EditorPage() {
   }
 
   async function handleSave() {
-    setError(null);
     try {
       await save({
         name: fileName,
@@ -88,11 +80,13 @@ export default function EditorPage() {
           title: "Error saving file",
           description:
             "A file with the same name already exists. Please choose a different name.",
+          variant: "destructive",
         });
       } else {
         toast({
           title: "Error saving file",
           description: "Unknown error occured.",
+          variant: "destructive",
         });
       }
     }
