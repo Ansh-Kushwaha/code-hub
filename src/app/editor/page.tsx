@@ -15,8 +15,18 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Editor } from "@monaco-editor/react";
+import { useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { save } from "../actions/FileActions";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
+
+interface FileProps {
+  name: string;
+  type: string;
+  text: string;
+}
 
 const editorThemes: { [key: string]: string } = {
   light: "light",
@@ -29,6 +39,11 @@ export default function EditorPage() {
 
   const [code, setCode] = useState<string>("");
   const [language, setLanguage] = useState<string>("c");
+  const [fileName, setFileName] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
+
+  const { data } = useSession();
+  const { toast } = useToast();
 
   useEffect(() => {
     let themeStr = theme;
@@ -50,13 +65,46 @@ export default function EditorPage() {
     console.log(code);
   }
 
+  async function handleSave() {
+    setError(null);
+    try {
+      await save({
+        name: fileName,
+        type: language,
+        text: code,
+        email: data?.user?.email!,
+      });
+      toast({
+        title: "Success",
+        description: "File saved successfully!",
+        duration: 3000,
+      });
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message.includes("File with the same name already exists")
+      ) {
+        toast({
+          title: "Error saving file",
+          description:
+            "A file with the same name already exists. Please choose a different name.",
+        });
+      } else {
+        toast({
+          title: "Error saving file",
+          description: "Unknown error occured.",
+        });
+      }
+    }
+  }
+
   return (
     <div className="flex bg-primary/5">
       <div className="editor-container flex flex-row h-[calc(100vh-3.5rem)] w-screen">
         <div className="code-area flex flex-col flex-grow">
           <ResizablePanelGroup direction="horizontal">
             <ResizablePanel defaultSize={60} minSize={50}>
-              <div className="p-2 ml-4 flex items-center justify-between">
+              <div className="p-2 mx-4 flex items-center justify-between">
                 <Select
                   value={language}
                   onValueChange={(value) => setLanguage(value)}
@@ -71,9 +119,32 @@ export default function EditorPage() {
                     <SelectItem value="python">Python</SelectItem>
                   </SelectContent>
                 </Select>
-                <Button variant="default" size="thin" onClick={handleRun}>
-                  Run
-                </Button>
+                <div className="space-x-2 flex flex-row">
+                  <Button variant="default" size="thin" onClick={handleRun}>
+                    Run
+                  </Button>
+                  {data?.user ? (
+                    <Input
+                      type="text"
+                      className="h-8"
+                      placeholder="File name to save"
+                      value={fileName}
+                      onChange={(e) => setFileName(e.target.value)}
+                    />
+                  ) : (
+                    <></>
+                  )}
+                  <Button
+                    variant="secondary"
+                    size="thin"
+                    onClick={handleSave}
+                    disabled={
+                      (data?.user ? false : true) || !(fileName.length > 0)
+                    }
+                  >
+                    Save
+                  </Button>
+                </div>
               </div>
               <Editor
                 theme={editorTheme}

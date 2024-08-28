@@ -3,8 +3,6 @@ import { Nav } from "./Nav";
 import { Icons } from "./icons";
 import { ModeToggle } from "./mode-toggle";
 import { Button } from "./ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { auth } from "@/auth";
 import { UserAvatarWithUsername } from "./user-avatar-with-username";
 
 export async function SiteHeader() {

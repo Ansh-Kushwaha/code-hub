@@ -1,9 +1,6 @@
-import { ThemeProvider } from "@/components/providers/theme-provider";
 import { SiteHeader } from "@/components/site-header";
-import { UserAvatarWithUsername } from "@/components/user-avatar-with-username";
-import { Inter } from "next/font/google";
-
-const inter = Inter({ subsets: ["latin"] });
+import AuthWrapper from "../auth-wrapper";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function EditorLayout({
   children,
@@ -13,7 +10,8 @@ export default function EditorLayout({
   return (
     <>
       <SiteHeader />
-      {children}
+      <AuthWrapper>{children}</AuthWrapper>
+      <Toaster />
     </>
   );
 }
