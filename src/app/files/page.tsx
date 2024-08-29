@@ -1,7 +1,16 @@
 import { auth } from "@/auth";
-import { FileCard } from "@/components/file-card";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
+
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 interface File {
   id: string;
@@ -30,10 +39,34 @@ export default async function FilesPage() {
   const files: File[] | undefined = userInfo?.files;
 
   return (
-    <div className="flex flex-row flex-wrap justify-between bg-primary/5 h-full space-x-4 p-4">
-      {files?.map((file: File) => (
-        <FileCard file={file} />
-      ))}
-    </div>
+    <main className="flex bg-primary/5">
+      <div className="app-container flex flex-col w-full">
+        <h1 className="inline-block text-start scroll-m-20 py-2 sm:text-4xl text-2xl font-extrabold tracking-tight dark:bg-gradient-to-b dark:from-[#ffffff] dark:to-[#adadad] bg-gradient-to-b from-[#555555] to-[#000000] bg-clip-text text-transparent">
+          All Files
+        </h1>
+        <Table>
+          <TableHeader>
+            <TableRow className="hover:bg-transparent">
+              <TableHead className="w-[20vw] sm:w-[55vw]">Name</TableHead>
+              <TableHead>Language</TableHead>
+              <TableHead>Created</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {files?.map((file: File) => (
+              <TableRow>
+                <TableCell className="w-[20vw] sm:w-[55vw]">
+                  {file.name}
+                </TableCell>
+                <TableCell className="capitalize">{file.type}</TableCell>
+                <TableCell>
+                  {file.createdAt.toISOString().split("T")[0]}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </main>
   );
 }
