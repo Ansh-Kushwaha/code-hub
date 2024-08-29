@@ -35,6 +35,9 @@ export default function EditorPage() {
   const [language, setLanguage] = useState<string>("c");
   const [fileName, setFileName] = useState<string>("");
 
+  const [output, setOutput] = useState<string>("");
+  const [isError, setIsError] = useState<boolean>(false);
+
   const { data } = useSession();
   const { toast } = useToast();
 
@@ -54,8 +57,20 @@ export default function EditorPage() {
     setEditorTheme(editorThemes[themeStr]);
   }, [theme]);
 
-  function handleRun() {
-    console.log(code);
+  async function handleRun() {
+    const res = await fetch("/api/run", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        code: code,
+        language: language,
+      }),
+    });
+    const data = await res.json();
+    setOutput(data.message);
+    setIsError(res.status !== 200);
   }
 
   async function handleSave() {
@@ -155,7 +170,9 @@ export default function EditorPage() {
               </div>
               <Separator />
               {/* TODO: Find better approach to solve overflow issue */}
-              <div className="flex-grow p-2">Code Hub!</div>
+              <div className="flex-grow p-2 font-mono overflow-auto whitespace-break-spaces">
+                <span className={isError ? "text-rose-500" : ""}>{output}</span>
+              </div>
             </ResizablePanel>
           </ResizablePanelGroup>
         </div>
