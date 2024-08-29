@@ -9,7 +9,7 @@ interface FileProps {
   email: string;
 }
 
-export async function save({ name, type, text, email }: FileProps) {
+export async function saveFile({ name, type, text, email }: FileProps) {
   const user = await prisma.user.findUnique({
     where: {
       email: email,
@@ -40,4 +40,22 @@ export async function save({ name, type, text, email }: FileProps) {
       userId: user?.id!,
     },
   });
+}
+
+export async function loadFile(id: string) {
+  if (id.length != 24) {
+    throw new Error("File not found!");
+  }
+
+  const file = await prisma.file.findUnique({
+    where: {
+      id: id,
+    },
+  });
+
+  if (!file) {
+    throw new Error("File not found!");
+  }
+
+  return file;
 }
