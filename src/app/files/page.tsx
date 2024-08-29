@@ -5,12 +5,12 @@ import { redirect } from "next/navigation";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import Link from "next/link";
 
 interface File {
   id: string;
@@ -53,10 +53,12 @@ export default async function FilesPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {files?.map((file: File) => (
-              <TableRow>
+            {files?.map((file: File, index) => (
+              <TableRow key={index}>
                 <TableCell className="w-[20vw] sm:w-[55vw]">
-                  {file.name}
+                  <Link href={"/editor/" + file.id} target="_blank">
+                    {file.name}
+                  </Link>
                 </TableCell>
                 <TableCell className="capitalize">{file.type}</TableCell>
                 <TableCell>

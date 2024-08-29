@@ -18,7 +18,7 @@ import { Editor } from "@monaco-editor/react";
 import { useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { save } from "../actions/FileActions";
+import { saveFile } from "../actions/file-actions";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -60,7 +60,7 @@ export default function EditorPage() {
 
   async function handleSave() {
     try {
-      await save({
+      await saveFile({
         name: fileName,
         type: language,
         text: code,
