@@ -35,6 +35,9 @@ export default function EditorPage() {
   const [language, setLanguage] = useState<string>("c");
   const [fileName, setFileName] = useState<string>("");
 
+  const [output, setOutput] = useState<string>("");
+  const [isError, setIsError] = useState<boolean>(false);
+
   const { data } = useSession();
   const { toast } = useToast();
 
@@ -54,8 +57,20 @@ export default function EditorPage() {
     setEditorTheme(editorThemes[themeStr]);
   }, [theme]);
 
-  function handleRun() {
-    console.log(code);
+  async function handleRun() {
+    const res = await fetch("/api/run", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        code: code,
+        language: language,
+      }),
+    });
+    const data = await res.json();
+    setOutput(data.message);
+    setIsError(res.status !== 200);
   }
 
   async function handleSave() {
@@ -93,12 +108,12 @@ export default function EditorPage() {
   }
 
   return (
-    <div className="flex bg-primary/5">
-      <div className="editor-container flex flex-row h-[calc(100vh-3.5rem)] w-screen">
-        <div className="code-area flex flex-col flex-grow">
-          <ResizablePanelGroup direction="horizontal">
-            <ResizablePanel defaultSize={60} minSize={50}>
-              <div className="p-2 mx-4 flex items-center justify-between">
+    <div className="editor-container flex flex-row w-full h-[calc(100vh-3.5rem)] bg-primary/5">
+      <div className="code-area flex flex-col w-full">
+        <ResizablePanelGroup direction="horizontal">
+          <ResizablePanel defaultSize={60} minSize={50}>
+            <div className="p-2 flex items-center justify-between">
+              <div className="flex flex-row space-x-2">
                 <Select
                   value={language}
                   onValueChange={(value) => setLanguage(value)}
@@ -113,52 +128,54 @@ export default function EditorPage() {
                     <SelectItem value="python">Python</SelectItem>
                   </SelectContent>
                 </Select>
-                <div className="space-x-2 flex flex-row">
-                  <Button variant="default" size="thin" onClick={handleRun}>
-                    Run
-                  </Button>
-                  {data?.user ? (
-                    <Input
-                      type="text"
-                      className="h-8"
-                      placeholder="File name to save"
-                      value={fileName}
-                      onChange={(e) => setFileName(e.target.value)}
-                    />
-                  ) : (
-                    <></>
-                  )}
-                  <Button
-                    variant="secondary"
-                    size="thin"
-                    onClick={handleSave}
-                    disabled={
-                      (data?.user ? false : true) || !(fileName.length > 0)
-                    }
-                  >
-                    Save
-                  </Button>
-                </div>
+                <Button variant="default" size="thin" onClick={handleRun}>
+                  Run
+                </Button>
               </div>
-              <Editor
-                theme={editorTheme}
-                value={code}
-                onChange={(code) => setCode(code || "")}
-                language={language}
-                className="flex flex-grow m-2 max-h-[calc(100vh-6.5rem)]" // fix this
-              />
-            </ResizablePanel>
-            <ResizableHandle withHandle />
-            <ResizablePanel minSize={30} className="flex flex-col">
-              <div className="m-2 h-8 flex items-center justify-between">
-                Output
+              <div className="flex flex-row space-x-2">
+                {data?.user ? (
+                  <Input
+                    type="text"
+                    className="h-8"
+                    placeholder="File name to save"
+                    value={fileName}
+                    onChange={(e) => setFileName(e.target.value)}
+                  />
+                ) : (
+                  <></>
+                )}
+                <Button
+                  variant="secondary"
+                  size="thin"
+                  onClick={handleSave}
+                  disabled={
+                    (data?.user ? false : true) || !(fileName.length > 0)
+                  }
+                >
+                  Save
+                </Button>
               </div>
-              <Separator />
-              {/* TODO: Find better approach to solve overflow issue */}
-              <div className="flex-grow p-2">Code Hub!</div>
-            </ResizablePanel>
-          </ResizablePanelGroup>
-        </div>
+            </div>
+            <Editor
+              theme={editorTheme}
+              value={code}
+              onChange={(code) => setCode(code || "")}
+              language={language}
+              className="w-full h-[calc(100vh-6.5rem)] px-2 pb-2"
+            />
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+          <ResizablePanel minSize={30} className="flex flex-col">
+            <div className="m-2 h-8 flex items-center justify-between">
+              Output
+            </div>
+            <Separator />
+            {/* Trying text wrap */}
+            <div className="flex-grow p-2 font-mono text-wrap break-words">
+              <span className={isError ? "text-rose-500" : ""}>{output}</span>
+            </div>
+          </ResizablePanel>
+        </ResizablePanelGroup>
       </div>
     </div>
   );

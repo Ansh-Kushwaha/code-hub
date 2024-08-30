@@ -59,3 +59,31 @@ export async function loadFile(id: string) {
 
   return file;
 }
+
+export async function updateFile(id: string, text: string) {
+  if (id.length != 24) {
+    throw new Error("Invalid id!");
+  }
+
+  const file = await prisma.file.findUnique({
+    where: {
+      id: id,
+    },
+  });
+
+  if (!file) {
+    throw new Error("File not found!");
+  }
+
+  const updatedFile = await prisma.file.update({
+    where: {
+      id: id,
+    },data: {
+      text: text
+    }
+  });
+
+  if (!updatedFile) {
+    throw new Error("Unknown error occured!")
+  }
+}
