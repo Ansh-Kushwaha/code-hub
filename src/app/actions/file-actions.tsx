@@ -2,14 +2,20 @@
 
 import { prisma } from "@/lib/db";
 
-interface FileProps {
+interface SaveFileProps {
   name: string;
-  type: string;
+  language: string;
   text: string;
   email: string;
 }
 
-export async function saveFile({ name, type, text, email }: FileProps) {
+interface UpdateFileProps {
+  id: string;
+  new_name: string;
+  text: string;
+}
+
+export async function saveFile({ name, language, text, email }: SaveFileProps) {
   const user = await prisma.user.findUnique({
     where: {
       email: email,
@@ -23,8 +29,8 @@ export async function saveFile({ name, type, text, email }: FileProps) {
   const existingFile = await prisma.file.findFirst({
     where: {
       name,
-      type,
-      userId: user.id,
+      language,
+      author: user.id,
     },
   });
 
@@ -35,9 +41,9 @@ export async function saveFile({ name, type, text, email }: FileProps) {
   await prisma.file.create({
     data: {
       name: name,
-      type: type,
+      language: language,
       text: text,
-      userId: user?.id!,
+      author: user?.id!,
     },
   });
 }
@@ -60,7 +66,7 @@ export async function loadFile(id: string) {
   return file;
 }
 
-export async function updateFile(id: string, text: string) {
+export async function updateFile({ id, new_name, text }: UpdateFileProps) {
   if (id.length != 24) {
     throw new Error("Invalid id!");
   }
@@ -75,15 +81,27 @@ export async function updateFile(id: string, text: string) {
     throw new Error("File not found!");
   }
 
+  const existingFile = await prisma.file.findFirst({
+    where: {
+      name: new_name,
+    },
+  });
+
+  if (existingFile) {
+    throw new Error("File with the same name already exists");
+  }
+
   const updatedFile = await prisma.file.update({
     where: {
       id: id,
-    },data: {
-      text: text
-    }
+    },
+    data: {
+      name: new_name,
+      text: text,
+    },
   });
 
   if (!updatedFile) {
-    throw new Error("Unknown error occured!")
+    throw new Error("Unknown error occured!");
   }
 }

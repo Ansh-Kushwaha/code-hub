@@ -16,7 +16,6 @@ export const POST = async (req: NextRequest) => {
     });
 
     const response = await res.json();
-
     if (response.error) {
       return NextResponse.json({ message: response.error }, { status: 400 });
     }

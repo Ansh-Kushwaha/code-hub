@@ -20,7 +20,9 @@ export const UserAvatarWithUsername = async () => {
         </div>
       ) : (
         <Link href="/login">
-          <Button variant="ghost">Login</Button>
+          <Button variant="secondary" className="font-semibold">
+            Login
+          </Button>
         </Link>
       )}
     </>

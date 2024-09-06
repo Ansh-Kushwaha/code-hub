@@ -11,14 +11,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Link from "next/link";
+import { DeleteIcon } from "lucide-react";
 
 interface File {
   id: string;
   name: string;
-  type: string;
-  text: string | null;
-  userId: string;
+  language: string;
+  text: string;
+  author: string;
   createdAt: Date;
+  updatedAt: Date;
 }
 
 export default async function FilesPage() {
@@ -46,9 +48,13 @@ export default async function FilesPage() {
       <Table>
         <TableHeader>
           <TableRow className="hover:bg-transparent">
-            <TableHead className="sm:w-[75vw]">Name</TableHead>
-            <TableHead>Language</TableHead>
-            <TableHead>Created</TableHead>
+            <TableHead className="sm:w-[75vw] text-white font-semibold">
+              Name
+            </TableHead>
+            <TableHead className="text-white font-semibold">Language</TableHead>
+            <TableHead className="text-white font-semibold">
+              Last Updated
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -59,9 +65,12 @@ export default async function FilesPage() {
                   {file.name}
                 </Link>
               </TableCell>
-              <TableCell className="capitalize">{file.type}</TableCell>
+              <TableCell className="capitalize">{file.language}</TableCell>
               <TableCell>
-                {file.createdAt.toISOString().split("T")[0]}
+                {file.updatedAt.toISOString().split("T")[0]}
+              </TableCell>
+              <TableCell>
+                <DeleteIcon className="fill-red-800" />
               </TableCell>
             </TableRow>
           ))}

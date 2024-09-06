@@ -77,14 +77,14 @@ export default function EditorPage() {
     try {
       await saveFile({
         name: fileName,
-        type: language,
+        language: language,
         text: code,
         email: data?.user?.email!,
       });
       toast({
         title: "Success",
         description: "File saved successfully!",
-        duration: 3000,
+        duration: 1000,
       });
     } catch (error) {
       if (
@@ -132,29 +132,29 @@ export default function EditorPage() {
                   Run
                 </Button>
               </div>
-              <div className="flex flex-row space-x-2">
-                {data?.user ? (
+              {data?.user ? (
+                <div className="flex flex-row space-x-2">
                   <Input
                     type="text"
-                    className="h-8"
+                    className="h-8 ring-0 ring-transparent ring-offset-0"
                     placeholder="File name to save"
                     value={fileName}
                     onChange={(e) => setFileName(e.target.value)}
                   />
-                ) : (
-                  <></>
-                )}
-                <Button
-                  variant="secondary"
-                  size="thin"
-                  onClick={handleSave}
-                  disabled={
-                    (data?.user ? false : true) || !(fileName.length > 0)
-                  }
-                >
-                  Save
-                </Button>
-              </div>
+                  <Button
+                    variant="secondary"
+                    size="thin"
+                    onClick={handleSave}
+                    disabled={
+                      (data?.user ? false : true) || !(fileName.length > 0) || (code.length == 0)
+                    }
+                  >
+                    Save
+                  </Button>
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
             <Editor
               theme={editorTheme}

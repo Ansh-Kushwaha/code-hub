@@ -13,9 +13,11 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useParams } from "next/navigation";
-import { loadFile } from "@/app/actions/file-actions";
-import { File } from "@prisma/client";
+import { loadFile, updateFile } from "@/app/actions/file-actions";
+import { File, User } from "@prisma/client";
 import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import findUser from "@/app/actions/user-actions";
 
 const editorThemes: { [key: string]: string } = {
   light: "light",
@@ -29,6 +31,8 @@ export default function EditorPage() {
   const [code, setCode] = useState<string>("");
   const [language, setLanguage] = useState<string>("");
   const [file, setFile] = useState<File>();
+  const [user, setUser] = useState<User>();
+  const [newFileName, setNewFileName] = useState<string>("");
 
   const [output, setOutput] = useState<string>("");
   const [isError, setIsError] = useState<boolean>(false);
@@ -53,8 +57,12 @@ export default function EditorPage() {
 
   useEffect(() => {
     setCode(file?.text == null || undefined ? "" : file?.text);
-    setLanguage(file?.type!);
+    setLanguage(file?.language!);
   }, [file]);
+
+  useEffect(() => {
+    findUser(data?.user?.email!).then((user) => setUser(user));
+  }, [data]);
 
   useEffect(() => {
     let themeStr = theme;
@@ -88,6 +96,42 @@ export default function EditorPage() {
     setIsError(res.status !== 200);
   }
 
+  async function handleSave() {
+    try {
+      if (user?.id != file?.author) return; // extra check
+      if (!file) return;
+
+      await updateFile({
+        id: file.id,
+        new_name: newFileName == "" ? file.name : newFileName, // ToDo: Find a better way
+        text: code,
+      });
+      toast({
+        title: "Success",
+        description: "File saved successfully!",
+        duration: 1000,
+      });
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message.includes("File with the same name already exists")
+      ) {
+        toast({
+          title: "Error saving file",
+          description:
+            "A file with the same name already exists. Please choose a different name.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error saving file",
+          description: "Unknown error occured.",
+          variant: "destructive",
+        });
+      }
+    }
+  }
+
   return (
     <div className="editor-container flex flex-row w-full h-[calc(100vh-3.5rem)] bg-primary/5">
       <div className="code-area flex flex-col w-full">
@@ -95,21 +139,28 @@ export default function EditorPage() {
           <ResizablePanel defaultSize={60} minSize={50}>
             <div className="p-2 flex items-center justify-between">
               {data?.user ? (
+                <Input
+                  type="text"
+                  className="h-8 w-fit max-w-[240px] focus:ring-0 focus:ring-transparent focus:ring-offset-0"
+                  placeholder={file?.name}
+                  onChange={(e) => setNewFileName(e.target.value)}
+                />
+              ) : (
                 <span className="px-2 h-8 rounded-sm flex items-center">
                   {file?.name}
                 </span>
-              ) : (
-                <></>
               )}
               <div className="space-x-2 flex flex-row">
                 <Button variant="default" size="thin" onClick={handleRun}>
                   Run
                 </Button>
                 {/* Todo: Figure out how to allow only original user to save the file */}
-                {data?.user && (
-                  <Button variant="secondary" size="thin" disabled={true}>
+                {data?.user && file?.author == user?.id ? (
+                  <Button variant="secondary" size="thin" onClick={handleSave}>
                     Save
                   </Button>
+                ) : (
+                  <></>
                 )}
               </div>
             </div>
