@@ -7,7 +7,7 @@ import { UserAvatarWithUsername } from "./user-avatar-with-username";
 
 export async function SiteHeader() {
   return (
-    <header className="sticky top-0 z-10 md:px-[2rem] px-[1rem] flex border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-10 px-4 flex border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-14 w-screen items-center">
         {/* for desktop site */}
         <Nav />

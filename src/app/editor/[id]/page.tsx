@@ -6,21 +6,18 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Editor } from "@monaco-editor/react";
 import { useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { saveFile } from "../actions/file-actions";
-import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
+import { useParams } from "next/navigation";
+import { loadFile, updateFile } from "@/app/actions/file-actions";
+import { File, User } from "@prisma/client";
+import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import findUser from "@/app/actions/user-actions";
 
 const editorThemes: { [key: string]: string } = {
   light: "light",
@@ -32,14 +29,40 @@ export default function EditorPage() {
   const [editorTheme, setEditorTheme] = useState(editorThemes[theme!]);
 
   const [code, setCode] = useState<string>("");
-  const [language, setLanguage] = useState<string>("c");
-  const [fileName, setFileName] = useState<string>("");
+  const [language, setLanguage] = useState<string>("");
+  const [file, setFile] = useState<File>();
+  const [user, setUser] = useState<User>();
+  const [newFileName, setNewFileName] = useState<string>("");
 
   const [output, setOutput] = useState<string>("");
   const [isError, setIsError] = useState<boolean>(false);
 
   const { data } = useSession();
   const { toast } = useToast();
+  const router = useRouter();
+  const id = useParams().id;
+
+  useEffect(() => {
+    loadFile(id as string)
+      .then((file) => setFile(file))
+      .catch((error) => {
+        toast({
+          title: "Error loading File",
+          description: "File not found.",
+          variant: "destructive",
+        });
+        router.push("/editor");
+      });
+  }, []);
+
+  useEffect(() => {
+    setCode(file?.text == null || undefined ? "" : file?.text);
+    setLanguage(file?.language!);
+  }, [file]);
+
+  useEffect(() => {
+    findUser(data?.user?.email!).then((user) => setUser(user));
+  }, [data]);
 
   useEffect(() => {
     let themeStr = theme;
@@ -75,11 +98,13 @@ export default function EditorPage() {
 
   async function handleSave() {
     try {
-      await saveFile({
-        name: fileName,
-        language: language,
+      if (user?.id != file?.author) return; // extra check
+      if (!file) return;
+
+      await updateFile({
+        id: file.id,
+        new_name: newFileName == "" ? file.name : newFileName, // ToDo: Find a better way
         text: code,
-        email: data?.user?.email!,
       });
       toast({
         title: "Success",
@@ -113,48 +138,31 @@ export default function EditorPage() {
         <ResizablePanelGroup direction="horizontal">
           <ResizablePanel defaultSize={60} minSize={50}>
             <div className="p-2 flex items-center justify-between">
-              <div className="flex flex-row space-x-2">
-                <Select
-                  value={language}
-                  onValueChange={(value) => setLanguage(value)}
-                >
-                  <SelectTrigger className="h-8 w-[180px] focus:ring-0 focus:ring-transparent focus:ring-offset-0">
-                    <SelectValue placeholder="Language" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="c">C</SelectItem>
-                    <SelectItem value="cpp">C++</SelectItem>
-                    <SelectItem value="java">Java</SelectItem>
-                    <SelectItem value="python">Python</SelectItem>
-                  </SelectContent>
-                </Select>
+              {data?.user ? (
+                <Input
+                  type="text"
+                  className="h-8 w-fit max-w-[240px] focus:ring-0 focus:ring-transparent focus:ring-offset-0"
+                  placeholder={file?.name}
+                  onChange={(e) => setNewFileName(e.target.value)}
+                />
+              ) : (
+                <span className="px-2 h-8 rounded-sm flex items-center">
+                  {file?.name}
+                </span>
+              )}
+              <div className="space-x-2 flex flex-row">
                 <Button variant="default" size="thin" onClick={handleRun}>
                   Run
                 </Button>
-              </div>
-              {data?.user ? (
-                <div className="flex flex-row space-x-2">
-                  <Input
-                    type="text"
-                    className="h-8 ring-0 ring-transparent ring-offset-0"
-                    placeholder="File name to save"
-                    value={fileName}
-                    onChange={(e) => setFileName(e.target.value)}
-                  />
-                  <Button
-                    variant="secondary"
-                    size="thin"
-                    onClick={handleSave}
-                    disabled={
-                      (data?.user ? false : true) || !(fileName.length > 0) || (code.length == 0)
-                    }
-                  >
+                {/* Todo: Figure out how to allow only original user to save the file */}
+                {data?.user && file?.author == user?.id ? (
+                  <Button variant="secondary" size="thin" onClick={handleSave}>
                     Save
                   </Button>
-                </div>
-              ) : (
-                <></>
-              )}
+                ) : (
+                  <></>
+                )}
+              </div>
             </div>
             <Editor
               theme={editorTheme}
