@@ -27,6 +27,14 @@ const editorThemes: { [key: string]: string } = {
   dark: "vs-dark",
 };
 
+const languages: { [key: string]: string } = {
+  c: "C",
+  cpp: "C++",
+  java: "Java",
+  python: "Python",
+  go: "Go",
+};
+
 export default function EditorPage() {
   const { theme } = useTheme();
   const [editorTheme, setEditorTheme] = useState(editorThemes[theme!]);
@@ -122,11 +130,11 @@ export default function EditorPage() {
                     <SelectValue placeholder="Language" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="c">C</SelectItem>
-                    <SelectItem value="cpp">C++</SelectItem>
-                    <SelectItem value="java">Java</SelectItem>
-                    <SelectItem value="python">Python</SelectItem>
-                    <SelectItem value="go">Go</SelectItem>
+                    {Object.entries(languages).map(([key, value]) => (
+                      <SelectItem key={key} value={key}>
+                        {value}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <Button variant="default" size="thin" onClick={handleRun}>
