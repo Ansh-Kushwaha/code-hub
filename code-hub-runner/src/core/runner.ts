@@ -25,10 +25,7 @@ export async function run(code: string, languageName: string) {
     outputFile = await language.compile(sourceFile);
   }
 
-  console.log(execSync("ls -l", { cwd: directory }).toString());
-
   const output = await language.run(outputFile);
-  console.log(output);
 
   cleanup(sourceFile, outputFile);
 
