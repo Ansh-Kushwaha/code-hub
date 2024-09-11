@@ -1,4 +1,5 @@
 import { cLanguage } from "./c";
+import { goLanguage } from "./go";
 
 export interface Language {
   name: string;
@@ -10,4 +11,5 @@ export interface Language {
 
 export const languages: Record<string, Language> = {
   c: cLanguage,
+  go: goLanguage
 };

@@ -126,6 +126,7 @@ export default function EditorPage() {
                     <SelectItem value="cpp">C++</SelectItem>
                     <SelectItem value="java">Java</SelectItem>
                     <SelectItem value="python">Python</SelectItem>
+                    <SelectItem value="go">Go</SelectItem>
                   </SelectContent>
                 </Select>
                 <Button variant="default" size="thin" onClick={handleRun}>
