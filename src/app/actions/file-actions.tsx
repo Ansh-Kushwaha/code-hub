@@ -105,3 +105,25 @@ export async function updateFile({ id, new_name, text }: UpdateFileProps) {
     throw new Error("Unknown error occured!");
   }
 }
+
+export async function deleteFile(id: string) {
+  if (id.length != 24) {
+    throw new Error("Invalid id!");
+  }
+
+  const file = await prisma.file.findUnique({
+    where: {
+      id: id,
+    },
+  });
+
+  if (!file) {
+    throw new Error("File not found!");
+  }
+
+  await prisma.file.delete({
+    where: {
+      id: id,
+    }
+  })
+}

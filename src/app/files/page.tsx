@@ -13,10 +13,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Link from "next/link";
-import { DeleteIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { ModeToggle } from "@/components/mode-toggle";
+import { deleteFile } from "../actions/file-actions";
+import { Button } from "@/components/ui/button";
+import DeleteFileButton from "@/components/delete-file-button";
 
 interface File {
   id: string;
@@ -43,6 +45,10 @@ export default async function FilesPage() {
     },
   });
 
+  async function handleDelete(id: string) {
+    await deleteFile(id);
+  }
+
   const files: File[] | undefined = userInfo?.files;
 
   return (
@@ -51,18 +57,18 @@ export default async function FilesPage() {
         <div className="flex flex-row gap-2 items-center">
           <Image
             src="/icon-light.svg"
-            height={48}
-            width={48}
+            height={32}
+            width={32}
             alt="code-hub-logo"
             className="dark:invert-0"
           />
-          <span className="md:font-bold font-semibold inline-block text-2xl ml-2">
+          <span className="md:font-bold font-semibold inline-block text-xl">
             CODE HUB
           </span>
         </div>
         <Link
           href="/editor"
-          className="flex items-center p-2 rounded-md w-fit gap-2 font-semibold uppercase bg-primary text-white dark:text-black"
+          className="flex items-center p-2 rounded-md w-fit gap-2 text-sm font-semibold uppercase bg-primary text-white dark:text-black"
           target="_blank"
         >
           Open Editor
@@ -80,7 +86,7 @@ export default async function FilesPage() {
               <TableRow className="hover:bg-transparent font-extrabold uppercase">
                 <TableHead className="sm:w-[58vw]">Name</TableHead>
                 <TableHead>Language</TableHead>
-                <TableHead>Last Updated</TableHead>
+                <TableHead className="min-w-[160px]">Last Updated</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -91,9 +97,12 @@ export default async function FilesPage() {
                       {file.name}
                     </Link>
                   </TableCell>
-                  <TableCell className="capitalize">{file.language}</TableCell>
+                  <TableCell className="lowercase">{file.language}</TableCell>
                   <TableCell>
                     {file.updatedAt.toISOString().split("T")[0]}
+                  </TableCell>
+                  <TableCell>
+                    <DeleteFileButton id={file.id} />
                   </TableCell>
                 </TableRow>
               ))}

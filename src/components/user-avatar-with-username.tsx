@@ -14,7 +14,7 @@ export const UserAvatarWithUsername = async () => {
           <div className="flex flex-row items-center space-x-2 pl-1 pr-2 w-fit max-w-[200px] text-nowrap overflow-hidden h-10 bg-secondary/80 rounded-[19px]">
             <Avatar>
               <AvatarImage src={session.user.image!} />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarFallback>US</AvatarFallback>
             </Avatar>
             <span className="hidden md:inline-block">{session.user.name}</span>
             <LogOutButton />
