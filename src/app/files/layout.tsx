@@ -5,10 +5,5 @@ export default function FilesLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <>
-      <SiteHeader />
-      {children}
-    </>
-  );
+  return <>{children}</>;
 }

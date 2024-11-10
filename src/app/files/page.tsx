@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
@@ -12,6 +14,9 @@ import {
 } from "@/components/ui/table";
 import Link from "next/link";
 import { DeleteIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ArrowRightIcon } from "@radix-ui/react-icons";
+import { ModeToggle } from "@/components/mode-toggle";
 
 interface File {
   id: string;
@@ -41,41 +46,61 @@ export default async function FilesPage() {
   const files: File[] | undefined = userInfo?.files;
 
   return (
-    <div className="app-container flex flex-col flex-grow bg-primary/5 w-full min-h-[calc(100vh-3.5rem)]">
-      <h1 className="inline-block text-start scroll-m-20 py-2 sm:text-4xl text-2xl font-extrabold tracking-tight dark:bg-gradient-to-b dark:from-[#ffffff] dark:to-[#adadad] bg-gradient-to-b from-[#555555] to-[#000000] bg-clip-text text-transparent">
-        All Files
-      </h1>
-      <Table>
-        <TableHeader>
-          <TableRow className="hover:bg-transparent">
-            <TableHead className="sm:w-[75vw] text-white font-semibold">
-              Name
-            </TableHead>
-            <TableHead className="text-white font-semibold">Language</TableHead>
-            <TableHead className="text-white font-semibold">
-              Last Updated
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {files?.map((file: File, index) => (
-            <TableRow key={index}>
-              <TableCell className="sm:w-[75vw]">
-                <Link href={"/editor/" + file.id} target="_blank">
-                  {file.name}
-                </Link>
-              </TableCell>
-              <TableCell className="capitalize">{file.language}</TableCell>
-              <TableCell>
-                {file.updatedAt.toISOString().split("T")[0]}
-              </TableCell>
-              <TableCell>
-                <DeleteIcon className="fill-red-800" />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+    <div className="flex flex-row flex-grow w-full h-screen bg-primary/5">
+      <div className="sidebar flex flex-col justify-between w-[20%] h-screen p-3 gap-y-4">
+        <div className="flex flex-row gap-2 items-center">
+          <Image
+            src="/icon-light.svg"
+            height={48}
+            width={48}
+            alt="code-hub-logo"
+            className="dark:invert-0"
+          />
+          <span className="md:font-bold font-semibold inline-block text-2xl ml-2">
+            CODE HUB
+          </span>
+        </div>
+        <Link
+          href="/editor"
+          className="flex items-center p-2 rounded-md w-fit gap-2 font-semibold uppercase bg-primary text-white dark:text-black"
+          target="_blank"
+        >
+          Open Editor
+          <ArrowRightIcon width={16} height={16} />
+        </Link>
+      </div>
+      <div className="flex flex-col">
+        <div className="header flex flex-row justify-between h-16 mx-4 items-center">
+          <span className=" font-bold text-xl">All Files</span>
+          <ModeToggle />
+        </div>
+        <div className="rounded-lg p-4 bg-primary/5 h-full">
+          <Table className="rounded-lg dark:bg-zinc-900 bg-zinc-100 text-black dark:text-white">
+            <TableHeader>
+              <TableRow className="hover:bg-transparent font-extrabold uppercase">
+                <TableHead className="sm:w-[58vw]">Name</TableHead>
+                <TableHead>Language</TableHead>
+                <TableHead>Last Updated</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {files?.map((file: File, index) => (
+                <TableRow key={index} className="hover:border-white">
+                  <TableCell className="sm:w-[58vw]">
+                    <Link href={"/editor/" + file.id} target="_blank">
+                      {file.name}
+                    </Link>
+                  </TableCell>
+                  <TableCell className="capitalize">{file.language}</TableCell>
+                  <TableCell>
+                    {file.updatedAt.toISOString().split("T")[0]}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
     </div>
   );
 }

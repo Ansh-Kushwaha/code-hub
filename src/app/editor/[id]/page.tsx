@@ -96,7 +96,7 @@ export default function EditorPage() {
     setIsError(res.status !== 200);
   }
 
-  async function handleSave() {
+  async function handleUpdate() {
     try {
       if (user?.id != file?.author) return; // extra check
       if (!file) return;
@@ -156,8 +156,8 @@ export default function EditorPage() {
                 </Button>
                 {/* Todo: Figure out how to allow only original user to save the file */}
                 {data?.user && file?.author == user?.id ? (
-                  <Button variant="secondary" size="thin" onClick={handleSave}>
-                    Save
+                  <Button variant="secondary" size="thin" onClick={handleUpdate}>
+                    Update
                   </Button>
                 ) : (
                   <></>
@@ -179,7 +179,7 @@ export default function EditorPage() {
             </div>
             <Separator />
             {/* Trying text wrap */}
-            <div className="flex-grow p-2 font-mono text-wrap break-words">
+            <div className="flex-grow p-2 font-mono text-wrap whitespace-break-spaces">
               <span className={isError ? "text-rose-500" : ""}>{output}</span>
             </div>
           </ResizablePanel>

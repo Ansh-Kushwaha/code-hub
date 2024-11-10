@@ -87,7 +87,7 @@ export async function updateFile({ id, new_name, text }: UpdateFileProps) {
     },
   });
 
-  if (existingFile) {
+  if (existingFile && existingFile.id != id) {
     throw new Error("File with the same name already exists");
   }
 
