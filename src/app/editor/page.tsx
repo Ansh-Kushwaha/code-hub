@@ -66,6 +66,7 @@ export default function EditorPage() {
   }, [theme]);
 
   async function handleRun() {
+    setOutput("");
     const res = await fetch("/api/run", {
       method: "POST",
       headers: {
@@ -155,7 +156,9 @@ export default function EditorPage() {
                     size="thin"
                     onClick={handleSave}
                     disabled={
-                      (data?.user ? false : true) || !(fileName.length > 0) || (code.length == 0)
+                      (data?.user ? false : true) ||
+                      !(fileName.length > 0) ||
+                      code.length == 0
                     }
                   >
                     Save
@@ -180,7 +183,7 @@ export default function EditorPage() {
             </div>
             <Separator />
             {/* Trying text wrap */}
-            <div className="flex-grow p-2 font-mono text-wrap break-words">
+            <div className="flex-grow p-2 font-mono text-wrap whitespace-break-spaces">
               <span className={isError ? "text-rose-500" : ""}>{output}</span>
             </div>
           </ResizablePanel>

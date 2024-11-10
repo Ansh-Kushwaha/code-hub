@@ -23,7 +23,7 @@ export default function Home() {
           </span>
         </div>
         <Link href="/editor" className="flex w-fit text-xl">
-          <span className="flex flex-row items-center scroll-m-20 py-4 sm:text-2xl text-xl sm:ml-4 font-semibold tracking-tight first:mt-0 group">
+          <span className="flex flex-row items-center scroll-m-20 py-4 sm:text-2xl text-xl sm:ml-4 font-bold tracking-tight first:mt-0 group uppercase">
             Open Editor
             <ArrowRightIcon
               width={28}
