@@ -1,4 +1,4 @@
-FROM anshkushwaha/restricted-compilers as base
+FROM anuraglodhi/codehub-compilers:1.1.0 as base
 
 RUN npm install -g pnpm
 
