@@ -45,10 +45,6 @@ export default async function FilesPage() {
     },
   });
 
-  async function handleDelete(id: string) {
-    await deleteFile(id);
-  }
-
   const files: File[] | undefined = userInfo?.files;
 
   return (
