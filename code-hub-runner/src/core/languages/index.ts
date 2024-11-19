@@ -1,5 +1,8 @@
 import { cLanguage } from "./c";
+import { cppLanguage } from "./cpp";
 import { goLanguage } from "./go";
+import { javaLanguage } from "./java";
+import { pythonLanguage } from "./python";
 
 export interface Language {
   name: string;
@@ -11,5 +14,8 @@ export interface Language {
 
 export const languages: Record<string, Language> = {
   c: cLanguage,
-  go: goLanguage
+  cpp: cppLanguage,
+  go: goLanguage,
+  java: javaLanguage,
+  python: pythonLanguage,
 };

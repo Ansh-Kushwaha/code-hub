@@ -11,8 +11,13 @@ export async function run(code: string, languageName: string) {
     throw new Error(`Language ${languageName} is not supported`);
   }
 
+  let filename = `${directory}/main.${languageName}`;
+  if (languageName === "java") {
+    filename = `${directory}/Main.${languageName}`
+  }
+
   const { path: sourceFile } = writeToFile(
-    `${directory}/main.${languageName}`,
+    filename,
     code
   );
 
@@ -27,7 +32,7 @@ export async function run(code: string, languageName: string) {
 
   const output = await language.run(outputFile);
 
-  cleanup(sourceFile, outputFile);
+  // cleanup(sourceFile, outputFile);
 
   return output;
 }
