@@ -9,7 +9,7 @@ export interface Language {
   type: "compiled" | "interpreted";
 
   compile?: (sourceFile: string) => Promise<string>;
-  run: (file: string) => Promise<string>;
+  run: (file: string, input: string) => Promise<string>;
 }
 
 export const languages: Record<string, Language> = {

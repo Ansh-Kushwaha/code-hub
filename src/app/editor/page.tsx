@@ -17,7 +17,7 @@ import { Separator } from "@/components/ui/separator";
 import { Editor } from "@monaco-editor/react";
 import { useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { saveFile } from "../actions/file-actions";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
@@ -45,6 +45,7 @@ export default function EditorPage() {
 
   const [output, setOutput] = useState<string>("");
   const [isError, setIsError] = useState<boolean>(false);
+  const [input, setInput] = useState<string>("");
 
   const { data } = useSession();
   const { toast } = useToast();
@@ -75,6 +76,7 @@ export default function EditorPage() {
       body: JSON.stringify({
         code: code,
         language: language,
+        input: input,
       }),
     });
     const data = await res.json();
@@ -177,15 +179,38 @@ export default function EditorPage() {
             />
           </ResizablePanel>
           <ResizableHandle withHandle />
-          <ResizablePanel minSize={30} className="flex flex-col">
-            <div className="m-2 h-8 flex items-center justify-between">
-              Output
-            </div>
-            <Separator />
-            {/* Trying text wrap */}
-            <div className="flex-grow p-2 font-mono text-wrap whitespace-break-spaces">
-              <span className={isError ? "text-rose-500" : ""}>{output}</span>
-            </div>
+          <ResizablePanel minSize={30}>
+            <ResizablePanelGroup direction="vertical">
+              <ResizablePanel minSize={50}>
+                <div className="flex items-center justify-between">
+                  <span className="m-1 p-1 rounded-md font-semibold flex-grow items-start bg-primary/5">
+                    Output
+                  </span>
+                </div>
+                <Separator />
+                <div className="flex-grow p-2 font-mono text-wrap whitespace-break-spaces">
+                  <span className={isError ? "text-rose-500" : ""}>
+                    {output}
+                  </span>
+                </div>
+              </ResizablePanel>
+              <ResizableHandle withHandle />
+              <ResizablePanel minSize={10} className="flex flex-col">
+                <div className="flex items-center justify-between">
+                  <span className="m-1 p-1 rounded-md font-semibold flex-grow items-start bg-primary/5">
+                    Input
+                  </span>
+                </div>
+                <Separator />
+                <div className="flex-grow font-mono text-wrap whitespace-break-spaces">
+                  <textarea
+                    className="p-2 bg-transparent resize-none flex-grow w-full h-full focus:outline-none"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                  />
+                </div>
+              </ResizablePanel>
+            </ResizablePanelGroup>
           </ResizablePanel>
         </ResizablePanelGroup>
       </div>
