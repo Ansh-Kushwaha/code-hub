@@ -5,11 +5,12 @@ export const pythonLanguage: Language = {
   name: "python",
   type: "interpreted", // Go can be run with a single command
 
-  run: async (file: string) => {
+  run: async (file: string, input: string) => {
     try {
       const stdout = execSync(`python ${file}`, {
         encoding: "utf-8",
         stdio: "pipe",
+        input: input
       });
 
       return stdout;

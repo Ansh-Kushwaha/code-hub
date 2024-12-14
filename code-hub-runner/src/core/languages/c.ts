@@ -26,11 +26,12 @@ export const cLanguage: Language = {
     }
   },
 
-  run: async (file: string) => {
+  run: async (file: string, input: string) => {
     try {
       const stdout = execSync(file, {
         encoding: "utf-8",
         stdio: "pipe",
+        input: input
       });
 
       return stdout;
