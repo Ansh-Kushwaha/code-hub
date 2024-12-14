@@ -17,7 +17,7 @@ import { Separator } from "@/components/ui/separator";
 import { Editor } from "@monaco-editor/react";
 import { useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { saveFile } from "../actions/file-actions";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
@@ -45,6 +45,7 @@ export default function EditorPage() {
 
   const [output, setOutput] = useState<string>("");
   const [isError, setIsError] = useState<boolean>(false);
+  const [input, setInput] = useState<string>("");
 
   const { data } = useSession();
   const { toast } = useToast();
@@ -75,6 +76,7 @@ export default function EditorPage() {
       body: JSON.stringify({
         code: code,
         language: language,
+        input: input,
       }),
     });
     const data = await res.json();
@@ -117,10 +119,14 @@ export default function EditorPage() {
   }
 
   return (
-    <div className="editor-container flex flex-row w-full h-[calc(100vh-3.5rem)] bg-primary/5">
-      <div className="code-area flex flex-col w-full">
+    <div className="editor-container flex flex-row w-full h-[calc(100vh-3.5rem)] bg-background">
+      <div className="flex flex-col w-full">
         <ResizablePanelGroup direction="horizontal">
-          <ResizablePanel defaultSize={60} minSize={50}>
+          <ResizablePanel
+            defaultSize={60}
+            minSize={50}
+            className="code-area bg-neutral-100 dark:bg-neutral-900 m-1 ml-2 mb-2 rounded-md"
+          >
             <div className="p-2 flex items-center justify-between">
               <div className="flex flex-row space-x-2">
                 <Select
@@ -152,7 +158,7 @@ export default function EditorPage() {
                     onChange={(e) => setFileName(e.target.value)}
                   />
                   <Button
-                    variant="secondary"
+                    variant="default"
                     size="thin"
                     onClick={handleSave}
                     disabled={
@@ -177,15 +183,44 @@ export default function EditorPage() {
             />
           </ResizablePanel>
           <ResizableHandle withHandle />
-          <ResizablePanel minSize={30} className="flex flex-col">
-            <div className="m-2 h-8 flex items-center justify-between">
-              Output
-            </div>
-            <Separator />
-            {/* Trying text wrap */}
-            <div className="flex-grow p-2 font-mono text-wrap whitespace-break-spaces">
-              <span className={isError ? "text-rose-500" : ""}>{output}</span>
-            </div>
+          <ResizablePanel minSize={30}>
+            <ResizablePanelGroup direction="vertical">
+              <ResizablePanel
+                minSize={50}
+                className="output-panel bg-neutral-100 dark:bg-neutral-900 m-1 mr-2 rounded-md"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="m-1 p-1 rounded-md font-semibold flex-grow items-start">
+                    Output
+                  </span>
+                </div>
+                <Separator />
+                <div className="flex-grow p-2 font-mono text-wrap whitespace-break-spaces">
+                  <span className={isError ? "text-rose-500" : ""}>
+                    {output}
+                  </span>
+                </div>
+              </ResizablePanel>
+              <ResizableHandle withHandle />
+              <ResizablePanel
+                minSize={10}
+                className="input-panel flex flex-col bg-neutral-100 dark:bg-neutral-900 m-1 mr-2 mb-2 rounded-md hover:ring-1"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="m-1 p-1 rounded-md font-semibold flex-grow items-start">
+                    Input
+                  </span>
+                </div>
+                <Separator />
+                <div className="flex-grow font-mono text-wrap whitespace-break-spaces">
+                  <textarea
+                    className="p-2 bg-transparent resize-none flex-grow w-full h-full focus:outline-none"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                  />
+                </div>
+              </ResizablePanel>
+            </ResizablePanelGroup>
           </ResizablePanel>
         </ResizablePanelGroup>
       </div>

@@ -12,6 +12,7 @@ export const POST = async (req: NextRequest) => {
       body: JSON.stringify({
         code: data.code,
         language: data.language,
+        input: data.input,
       }),
     });
 

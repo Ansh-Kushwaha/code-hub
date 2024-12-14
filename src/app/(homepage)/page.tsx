@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="app-container flex flex-col bg-primary/5">
+    <div className="app-container flex flex-col min-h-[calc(100vh-3.5rem)] bg-primary/5">
       <h1 className="inline-block text-start scroll-m-20 py-2 sm:text-4xl text-2xl font-extrabold tracking-tight dark:bg-gradient-to-b dark:from-[#ffffff] dark:to-[#adadad] bg-gradient-to-b from-[#555555] to-[#000000] bg-clip-text text-transparent">
         Your online platform to write, compile, and save code seamlessly.
       </h1>
