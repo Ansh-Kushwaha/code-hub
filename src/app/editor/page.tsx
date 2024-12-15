@@ -35,6 +35,10 @@ const languages: { [key: string]: string } = {
   go: "Go",
 };
 
+interface Templates {
+  [key: string]: string;
+}
+
 export default function EditorPage() {
   const { theme } = useTheme();
   const [editorTheme, setEditorTheme] = useState(editorThemes[theme!]);
@@ -46,6 +50,7 @@ export default function EditorPage() {
   const [output, setOutput] = useState<string>("");
   const [isError, setIsError] = useState<boolean>(false);
   const [input, setInput] = useState<string>("");
+  const [templates, setTemplates] = useState<Templates>();
 
   const { data } = useSession();
   const { toast } = useToast();
@@ -65,6 +70,26 @@ export default function EditorPage() {
 
     setEditorTheme(editorThemes[themeStr]);
   }, [theme]);
+
+  useEffect(() => {
+    fetch("/templates.json")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to load templates");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setTemplates(data.templates);
+      })
+      .catch((error) => console.error(error));
+  }, []);
+
+  function updateLanguage(value: string) {
+    setLanguage(value);
+    const lang: string = languages[value];
+    setCode(templates?.[lang] || "");
+  }
 
   async function handleRun() {
     setOutput("");
@@ -131,7 +156,7 @@ export default function EditorPage() {
               <div className="flex flex-row space-x-2">
                 <Select
                   value={language}
-                  onValueChange={(value) => setLanguage(value)}
+                  onValueChange={(value) => updateLanguage(value)}
                 >
                   <SelectTrigger className="h-8 w-[180px] focus:ring-0 focus:ring-transparent focus:ring-offset-0">
                     <SelectValue placeholder="Language" />
@@ -176,17 +201,19 @@ export default function EditorPage() {
             </div>
             <Editor
               theme={editorTheme}
+              defaultValue={templates?.["C"] || ""}
               value={code}
-              onChange={(code) => setCode(code || "")}
+              onChange={(newCode) => setCode(newCode || "")}
               language={language}
               className="w-full h-[calc(100vh-6.5rem)] px-2 pb-2"
             />
           </ResizablePanel>
           <ResizableHandle withHandle />
-          <ResizablePanel minSize={30}>
+          <ResizablePanel minSize={30} defaultSize={40}>
             <ResizablePanelGroup direction="vertical">
               <ResizablePanel
-                minSize={50}
+                defaultSize={70}
+                minSize={40}
                 className="output-panel bg-neutral-100 dark:bg-neutral-900 m-1 mr-2 rounded-md"
               >
                 <div className="flex items-center justify-between">
@@ -203,6 +230,7 @@ export default function EditorPage() {
               </ResizablePanel>
               <ResizableHandle withHandle />
               <ResizablePanel
+                defaultSize={30}
                 minSize={10}
                 className="input-panel flex flex-col bg-neutral-100 dark:bg-neutral-900 m-1 mr-2 mb-2 rounded-md hover:ring-1"
               >
