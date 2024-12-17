@@ -211,6 +211,7 @@ export default function EditorPage() {
             </div>
             <Editor
               theme={editorTheme}
+              defaultValue={templates?.["C"] || ""}
               value={code}
               onChange={(newCode) => setCode(newCode || "")}
               language={language}

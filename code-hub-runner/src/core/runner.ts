@@ -5,7 +5,7 @@ import { execSync } from "node:child_process";
 
 const directory = "/code-hub/temp";
 
-export async function run(code: string, languageName: string) {
+export async function run(code: string, languageName: string, input:string) {
   const language = languages[languageName];
   if (!language) {
     throw new Error(`Language ${languageName} is not supported`);
@@ -30,7 +30,7 @@ export async function run(code: string, languageName: string) {
     outputFile = await language.compile(sourceFile);
   }
 
-  const output = await language.run(outputFile);
+  const output = await language.run(outputFile, input);
 
   // cleanup(sourceFile, outputFile);
 
