@@ -35,22 +35,31 @@ const languages: { [key: string]: string } = {
   go: "Go",
 };
 
-interface Templates {
-  [key: string]: string;
-}
+// interface Templates {
+//   [key: string]: string;
+// }
+
+const templates: { [key: string]: string } = {
+  C: '#include <stdio.h>\n\nint main() {\n    // Your code here\n    printf("Hello, World!\\n");\n    return 0;\n}',
+  Java: 'public class Main {\n    public static void main(String[] args) {\n        // Your code here\n        System.out.println("Hello, World!");\n    }\n}',
+  Python: '# Your code here\nprint("Hello, World!")',
+  Go: 'package main\n\nimport "fmt"\n\nfunc main() {\n    // Your code here\n    fmt.Println("Hello, World!")\n}',
+  "C++":
+    '#include <iostream>\nusing namespace std;\n\nint main() {\n    // Your code here\n    cout << "Hello, World!" << endl;\n    return 0;\n}',
+};
 
 export default function EditorPage() {
   const { theme } = useTheme();
   const [editorTheme, setEditorTheme] = useState(editorThemes[theme!]);
 
-  const [code, setCode] = useState<string>("");
+  const [code, setCode] = useState<string>(templates["C"]);
   const [language, setLanguage] = useState<string>("c");
   const [fileName, setFileName] = useState<string>("");
 
   const [output, setOutput] = useState<string>("");
   const [isError, setIsError] = useState<boolean>(false);
   const [input, setInput] = useState<string>("");
-  const [templates, setTemplates] = useState<Templates>();
+  // const [templates, setTemplates] = useState<Templates>();
 
   const { data } = useSession();
   const { toast } = useToast();
@@ -71,24 +80,25 @@ export default function EditorPage() {
     setEditorTheme(editorThemes[themeStr]);
   }, [theme]);
 
-  useEffect(() => {
-    fetch("/templates.json")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to load templates");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setTemplates(data.templates);
-      })
-      .catch((error) => console.error(error));
-  }, []);
+  // Not using for now
+  // useEffect(() => {
+  //   fetch("/templates.json")
+  //     .then((response) => {
+  //       if (!response.ok) {
+  //         throw new Error("Failed to load templates");
+  //       }
+  //       return response.json();
+  //     })
+  //     .then((data) => {
+  //       setTemplates(data.templates);
+  //     })
+  //     .catch((error) => console.error(error));
+  // }, []);
 
   function updateLanguage(value: string) {
     setLanguage(value);
     const lang: string = languages[value];
-    setCode(templates?.[lang] || "");
+    setCode(templates[lang]);
   }
 
   async function handleRun() {
@@ -177,7 +187,7 @@ export default function EditorPage() {
                 <div className="flex flex-row space-x-2">
                   <Input
                     type="text"
-                    className="h-8 ring-0 ring-transparent ring-offset-0"
+                    className="h-8 focus-visible:ring-offset-1 focus-visible:ring-1 focus-visible:ring-blue-500/60"
                     placeholder="File name to save"
                     value={fileName}
                     onChange={(e) => setFileName(e.target.value)}
@@ -201,7 +211,6 @@ export default function EditorPage() {
             </div>
             <Editor
               theme={editorTheme}
-              defaultValue={templates?.["C"] || ""}
               value={code}
               onChange={(newCode) => setCode(newCode || "")}
               language={language}

@@ -13,11 +13,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Link from "next/link";
-import { Trash2 } from "lucide-react";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { ModeToggle } from "@/components/mode-toggle";
 import { deleteFile } from "../actions/file-actions";
-import { Button } from "@/components/ui/button";
 import DeleteFileButton from "@/components/delete-file-button";
 
 interface File {
@@ -91,13 +89,20 @@ export default async function FilesPage() {
             </TableHeader>
             <TableBody>
               {files?.map((file: File, index) => (
-                <TableRow key={index} className="hover:border-white">
+                <TableRow
+                  key={index}
+                  className="dark:hover:border-white hover:border-neutral-700 hover:bg-primary/5"
+                >
                   <TableCell className="sm:w-[58vw]">
-                    <Link href={"/editor/" + file.id} target="_blank">
+                    <Link
+                      href={"/editor/" + file.id}
+                      target="_blank"
+                      className="flex flex-grow"
+                    >
                       {file.name}
                     </Link>
                   </TableCell>
-                  <TableCell className="lowercase">{file.language}</TableCell>
+                  <TableCell className="capitalize">{file.language}</TableCell>
                   <TableCell>
                     {file.updatedAt.toISOString().split("T")[0]}
                   </TableCell>
