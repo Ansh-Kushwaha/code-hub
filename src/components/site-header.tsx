@@ -17,7 +17,7 @@ export async function SiteHeader() {
           <UserAvatarWithUsername />
           <Link
             href={
-              "https://www.github.com/ansh-kushwaha/online-text-editor-placeholder"
+              "https://github.com/Ansh-Kushwaha/code-hub"
             }
             target="_blank"
           >
